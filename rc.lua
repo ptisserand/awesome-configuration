@@ -326,29 +326,7 @@ globalkeys = gears.table.join(
               {description = "lua execute prompt", group = "awesome"}),
     -- Menubar
     awful.key({ modkey }, "p", function() menubar.show() end,
-              {description = "show the menubar", group = "launcher"}),
-    
-    -- Rob extra
-    -- Volume Keys
-    awful.key({}, "XF86AudioLowerVolume", function ()
-        awful.util.spawn("pactl set-sink-volume @DEFAULT_SINK@ -5%", false)
-    end),
-    awful.key({}, "XF86AudioRaiseVolume", function ()
-        awful.util.spawn("pactl set-sink-volume @DEFAULT_SINK@ +5%", false)
-    end),
-    awful.key({}, "XF86AudioMute", function ()
-        awful.util.spawn("pactl set-sink-mute @DEFAULT_SINK@ toggle", false)
-    end),
-    -- Media Keys
-    awful.key({}, "XF86AudioPlay", function()
-        awful.util.spawn("playerctl play-pause", false)
-    end),
-    awful.key({}, "XF86AudioNext", function()
-        awful.util.spawn("playerctl next", false)
-    end),
-    awful.key({}, "XF86AudioPrev", function()
-        awful.util.spawn("playerctl previous", false)
-    end)
+              {description = "show the menubar", group = "launcher"})
 )
 
 clientkeys = gears.table.join(
@@ -584,3 +562,44 @@ end)
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
+
+-- Rob
+rob_media_keys = gears.table.join(
+    -- Volume Keys
+    awful.key({}, "XF86AudioLowerVolume", function ()
+        awful.util.spawn("pactl set-sink-volume @DEFAULT_SINK@ -5%", false)
+    end),
+    awful.key({}, "XF86AudioRaiseVolume", function ()
+        awful.util.spawn("pactl set-sink-volume @DEFAULT_SINK@ +5%", false)
+    end),
+    awful.key({}, "XF86AudioMute", function ()
+        awful.util.spawn("pactl set-sink-mute @DEFAULT_SINK@ toggle", false)
+    end),
+    -- Media Keys
+    awful.key({}, "XF86AudioPlay", function()
+        awful.util.spawn("playerctl play-pause", false)
+    end),
+    awful.key({}, "XF86AudioNext", function()
+        awful.util.spawn("playerctl next", false)
+    end),
+    awful.key({}, "XF86AudioPrev", function()
+        awful.util.spawn("playerctl previous", false)
+    end)
+)
+
+rob_extra_keys = gears.table.join(
+    awful.key({ modkey, "Shift"   }, "n", 
+        function () 
+            if naughty.is_suspended() then
+                naughty.resume()
+                naughty.notify({text= "Notification resumed" })
+            else
+                naughty.notify({text= "Going to disable notifications"})
+                naughty.suspend()
+            end
+        end
+    )
+)
+
+rob_keys = gears.table.join(root.keys(), rob_media_keys, rob_extra_keys)
+root.keys(rob_keys)
