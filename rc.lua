@@ -47,8 +47,10 @@ end
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 
+-- beautiful.wallpaper = awful.util.get_configuration_dir() .. "background/tomorrow.jpg"
+
 -- This is used later as the default terminal and editor to run.
-terminal = "xterm"
+terminal = "urxvt"
 editor = os.getenv("EDITOR") or "nano"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -603,3 +605,6 @@ rob_extra_keys = gears.table.join(
 
 rob_keys = gears.table.join(root.keys(), rob_media_keys, rob_extra_keys)
 root.keys(rob_keys)
+
+-- reduced notification icon size
+naughty.config.defaults['icon_size'] = 64
