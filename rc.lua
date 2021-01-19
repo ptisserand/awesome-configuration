@@ -283,8 +283,8 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Shift"   }, "q", awesome.quit,
               {description = "quit awesome", group = "awesome"}),
 
-    awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)          end,
-              {description = "increase master width factor", group = "layout"}),
+    -- awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)          end,
+    --          {description = "increase master width factor", group = "layout"}),
     awful.key({ modkey,           }, "h",     function () awful.tag.incmwfact(-0.05)          end,
               {description = "decrease master width factor", group = "layout"}),
     awful.key({ modkey, "Shift"   }, "h",     function () awful.tag.incnmaster( 1, nil, true) end,
@@ -444,6 +444,14 @@ root.keys(globalkeys)
 -- }}}
 
 -- {{{ Rules
+function rob_screen()
+	if awful.screen.count() < 2 then
+		return 1
+	else
+		return 2
+	end
+end
+
 -- Rules to apply to new clients (through the "manage" signal).
 awful.rules.rules = {
     -- All clients will match this rule.
@@ -498,7 +506,24 @@ awful.rules.rules = {
     -- Set Firefox to always map on the tag named "2" on screen 1.
     -- { rule = { class = "Firefox" },
     --   properties = { screen = 1, tag = "2" } },
+    {
+        rule = {
+            class = "jetbrains-studio",
+            name="^win[0-9]+$"
+        },
+        properties = { 
+            placement = awful.placement.no_offscreen,
+            titlebars_enabled = false
+        }
+    },
+    { 
+        rule = { 
+            class = "Chromium"
+        },
+        properties = { tag = "9"}
+    }
 }
+
 -- }}}
 
 -- {{{ Signals
@@ -600,7 +625,18 @@ rob_extra_keys = gears.table.join(
                 naughty.suspend()
             end
         end
-    )
+    ),
+    awful.key({}, "XF86MonBrightnessUp", function()
+        awful.util.spawn("/home/robin/bin/rob-bright up", false)
+    end),
+    awful.key({}, "XF86MonBrightnessDown", function()
+        awful.util.spawn("/home/robin/bin/rob-bright down", false)
+    end),
+    awful.key({ modkey,  }, "l",
+            function ()
+              awful.util.spawn("sync")
+              awful.util.spawn("xautolock -locknow")
+          end)
 )
 
 rob_keys = gears.table.join(root.keys(), rob_media_keys, rob_extra_keys)
@@ -608,3 +644,6 @@ root.keys(rob_keys)
 
 -- reduced notification icon size
 naughty.config.defaults['icon_size'] = 64
+
+-- start automatic screen locking
+awful.util.spawn_with_shell("~/.config/awesome/locker.sh")
